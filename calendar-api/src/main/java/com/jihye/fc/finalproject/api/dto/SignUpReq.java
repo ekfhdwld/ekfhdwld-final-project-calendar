@@ -1,13 +1,13 @@
 package com.jihye.fc.finalproject.api.dto;
 
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Data
 public class SignUpReq {
-	private final String name;
-	private final String email;
-	private final String password;
-	private final LocalDate birthday;
+	private String name;
+	private String email;
+	private String password;
+	private LocalDate birthday;
 }

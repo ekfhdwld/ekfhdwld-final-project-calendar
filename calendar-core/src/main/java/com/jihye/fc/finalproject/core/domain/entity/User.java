@@ -2,14 +2,11 @@ package com.jihye.fc.finalproject.core.domain.entity;
 
 import com.jihye.fc.finalproject.core.util.Encryptor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.time.LocalDate;
-
-
 
 @NoArgsConstructor
 @Table(name = "users")
