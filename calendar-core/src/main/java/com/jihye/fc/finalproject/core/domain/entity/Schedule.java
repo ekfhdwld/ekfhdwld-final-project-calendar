@@ -53,7 +53,7 @@ public class Schedule extends BaseEntity{
 	public static Schedule notification(String title, LocalDateTime notifyAt, User writer) {
 		return  Schedule.builder()
 		  .title(title)
-		  .endAt(notifyAt)
+		  .startAt(notifyAt)
 		  .writer(writer)
 		  .scheduleType(ScheduleType.NOTIFICATION)
 		  .build();
