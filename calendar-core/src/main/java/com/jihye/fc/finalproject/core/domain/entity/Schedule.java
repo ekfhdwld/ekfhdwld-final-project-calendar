@@ -4,10 +4,13 @@ import com.jihye.fc.finalproject.core.domain.Event;
 import com.jihye.fc.finalproject.core.domain.Notification;
 import com.jihye.fc.finalproject.core.domain.ScheduleType;
 import com.jihye.fc.finalproject.core.domain.Task;
+import com.jihye.fc.finalproject.core.util.Period;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
@@ -69,6 +72,10 @@ public class Schedule extends BaseEntity{
 	
 	public Notification toNotification(){
 		return new Notification(this);
+	}
+	
+	public boolean isOverlapped(LocalDate date){
+		return Period.of(getStartAt(), getEndAt()).isOverlapped(date);
 	}
 
 }

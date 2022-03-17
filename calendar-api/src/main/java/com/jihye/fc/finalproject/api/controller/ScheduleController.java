@@ -3,8 +3,10 @@ package com.jihye.fc.finalproject.api.controller;
 import com.jihye.fc.finalproject.api.dto.*;
 import com.jihye.fc.finalproject.api.service.EventService;
 import com.jihye.fc.finalproject.api.service.NotificationService;
+import com.jihye.fc.finalproject.api.service.ScheduleQueryService;
 import com.jihye.fc.finalproject.api.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,7 @@ import java.util.List;
 @RequestMapping("/api/schedules")
 public class ScheduleController {
 	
+	private final ScheduleQueryService scheduleQueryService; //조회담당 서비스
 	private final TaskService taskService;
 	private final EventService eventService;
 	private final NotificationService notificationService;
@@ -43,5 +46,16 @@ public class ScheduleController {
 		notificationService.create(notificationCreateReq, authUser);
 		return ResponseEntity.ok().build();
 	}
+	
+	@GetMapping("/day")
+	public List<ScheduleDto> getScheduleByDay(
+	    AuthUser authUser,
+	    @RequestParam(required = false)
+	    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+		
+		return scheduleQueryService.getScheduleByDay(authUser, date == null ? LocalDate.now() : date);
+	}
+	
+	
 	
 }
