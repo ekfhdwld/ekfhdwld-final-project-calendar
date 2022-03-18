@@ -7,11 +7,13 @@ import com.jihye.fc.finalproject.core.domain.entity.Engagement;
 import com.jihye.fc.finalproject.core.domain.entity.Schedule;
 import com.jihye.fc.finalproject.core.domain.entity.repository.EngagementRepository;
 import com.jihye.fc.finalproject.core.domain.entity.repository.ScheduleRepository;
+import com.jihye.fc.finalproject.core.util.Period;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,5 +37,35 @@ public class ScheduleQueryService {
 		      .filter(engagement -> engagement.isOverlapped(date))
 		      .map(engagement -> DtoConverter.fromSchedule(engagement.getSchedule()))
 		  ).collect(Collectors.toList());
+	}
+	
+	public List<ScheduleDto> getScheduleByWeek(AuthUser authUser, LocalDate startOfWeek) {
+		final Period period = Period.of(startOfWeek, startOfWeek.plusDays(6));
+		
+		return Stream.concat(
+		  scheduleRepository.findAllByWriter_Id(authUser.getId())
+			.stream()
+			.filter(schedule -> schedule.isOverlapped(period))
+			.map(DtoConverter::fromSchedule),
+		  engagementRepository.findAllByAttendee_Id(authUser.getId())
+			.stream()
+			.filter(engagement -> engagement.isOverlapped(period))
+			.map(engagement -> DtoConverter.fromSchedule(engagement.getSchedule()))
+		).collect(Collectors.toList());
+	}
+	
+	public List<ScheduleDto> getScheduleByMonth(AuthUser authUser, YearMonth yearMonth) {
+		final Period period = Period.of(yearMonth.atDay(1), yearMonth.atEndOfMonth());
+		
+		return Stream.concat(
+		  scheduleRepository.findAllByWriter_Id(authUser.getId())
+			.stream()
+			.filter(schedule -> schedule.isOverlapped(period))
+			.map(DtoConverter::fromSchedule),
+		  engagementRepository.findAllByAttendee_Id(authUser.getId())
+			.stream()
+			.filter(engagement -> engagement.isOverlapped(period))
+			.map(engagement -> DtoConverter.fromSchedule(engagement.getSchedule()))
+		).collect(Collectors.toList());
 	}
 }
