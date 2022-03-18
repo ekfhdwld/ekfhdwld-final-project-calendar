@@ -34,10 +34,6 @@ public class Period {
 		return this.startAt.isBefore(endAt) && startAt.isBefore(this.endAt);
 	}
 	
-	public boolean isOverlapped(LocalDate date){
-		return isOverlapped(date.atStartOfDay(), LocalDateTime.of(date, LocalTime.of(23, 59, 59, 999999999)));
-	}
-	
 	public boolean isOverlapped(Period period){
 		return isOverlapped(period.startAt, period.endAt);
 	}
