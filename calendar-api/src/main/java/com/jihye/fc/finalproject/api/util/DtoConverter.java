@@ -34,6 +34,7 @@ public abstract class DtoConverter {
 			case NOTIFICATION:
 				return NotificationDto.builder()
 				  .scheduleId(schedule.getId())
+				  .writerId(schedule.getWriter().getId())
 				  .notifyAt(schedule.getStartAt())
 				  .title(schedule.getTitle())
 				  .build();
