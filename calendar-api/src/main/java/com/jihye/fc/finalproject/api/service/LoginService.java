@@ -4,6 +4,8 @@ import com.jihye.fc.finalproject.api.dto.LoginReq;
 import com.jihye.fc.finalproject.api.dto.SignUpReq;
 import com.jihye.fc.finalproject.core.domain.entity.User;
 import com.jihye.fc.finalproject.core.dto.UserCreateReq;
+import com.jihye.fc.finalproject.core.exception.CalendarException;
+import com.jihye.fc.finalproject.core.exception.ErrorCode;
 import com.jihye.fc.finalproject.core.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,7 +43,7 @@ public class LoginService {
 		if(user.isPresent()){
 			session.setAttribute(LOGIN_SESSION_KEY, user.get().getId());
 		}else{
-			throw new RuntimeException("password or email not match");
+			throw new CalendarException(ErrorCode.PASSWORD_NOT_MATCH);
 		}
 	}
 	
