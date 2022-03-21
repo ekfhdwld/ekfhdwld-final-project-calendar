@@ -5,6 +5,8 @@ import com.jihye.fc.finalproject.api.dto.NotificationDto;
 import com.jihye.fc.finalproject.api.dto.ScheduleDto;
 import com.jihye.fc.finalproject.api.dto.TaskDto;
 import com.jihye.fc.finalproject.core.domain.entity.Schedule;
+import com.jihye.fc.finalproject.core.exception.CalendarException;
+import com.jihye.fc.finalproject.core.exception.ErrorCode;
 
 /**
  * abstract 로 만들면 생성자가 아예 호출이 안됨
@@ -39,7 +41,7 @@ public abstract class DtoConverter {
 				  .title(schedule.getTitle())
 				  .build();
 			default :
-				throw new RuntimeException("bad request. not matched schedule type.");
+				throw new CalendarException(ErrorCode.BAD_REQUEST);
 		}
 	}
 }

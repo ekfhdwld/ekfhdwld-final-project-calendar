@@ -3,6 +3,8 @@ package com.jihye.fc.finalproject.core.service;
 import com.jihye.fc.finalproject.core.domain.entity.User;
 import com.jihye.fc.finalproject.core.domain.entity.repository.UserRepository;
 import com.jihye.fc.finalproject.core.dto.UserCreateReq;
+import com.jihye.fc.finalproject.core.exception.CalendarException;
+import com.jihye.fc.finalproject.core.exception.ErrorCode;
 import com.jihye.fc.finalproject.core.util.Encryptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ public class UserService {
 	public User create(UserCreateReq req) {
 		userRepository.findByEmail(req.getEmail())
 		  .ifPresent(u -> {
-			  throw new RuntimeException("user already existed");
+			  throw new CalendarException(ErrorCode.ALREADY_EXISTS_USER);
 		  });
 		
 		return userRepository.save(User.builder()
@@ -41,6 +43,6 @@ public class UserService {
 	@Transactional
 	public User findByUserId(Long userId){
 		return userRepository.findById(userId)
-		  .orElseThrow(() -> new RuntimeException("no user by id."));
+		  .orElseThrow(() -> new CalendarException(ErrorCode.USER_NOT_FOUND));
 	}
 }
