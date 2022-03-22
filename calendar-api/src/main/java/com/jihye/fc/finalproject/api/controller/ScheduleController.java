@@ -1,11 +1,10 @@
 package com.jihye.fc.finalproject.api.controller;
 
 import com.jihye.fc.finalproject.api.dto.*;
-import com.jihye.fc.finalproject.api.service.EventService;
-import com.jihye.fc.finalproject.api.service.NotificationService;
-import com.jihye.fc.finalproject.api.service.ScheduleQueryService;
-import com.jihye.fc.finalproject.api.service.TaskService;
+import com.jihye.fc.finalproject.api.service.*;
+import com.jihye.fc.finalproject.core.domain.RequestStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +22,7 @@ public class ScheduleController {
 	private final ScheduleQueryService scheduleQueryService; //조회담당 서비스
 	private final TaskService taskService;
 	private final EventService eventService;
+	private final EngagementService engagementService;
 	private final NotificationService notificationService;
 	
 	@PostMapping("/tasks")
@@ -71,5 +71,14 @@ public class ScheduleController {
 	  @RequestParam(required = false)
 	  @DateTimeFormat(pattern = "yyyy-MM") String yearMonth){ //2022-03
 		return scheduleQueryService.getScheduleByMonth(authUser, yearMonth == null ? YearMonth.now() : YearMonth.parse(yearMonth));
+	}
+	
+	@PutMapping("/events/engagements/{engagementId}")
+	public RequestStatus updateEngagement(
+		  @Valid @RequestBody ReplyEngagementReq replyEngagementReq,
+		  @PathVariable Long engagementId,
+		  AuthUser authUser
+	){
+		return engagementService.update(authUser, engagementId, replyEngagementReq.getType());
 	}
 }
