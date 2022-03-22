@@ -1,7 +1,9 @@
 package com.jihye.fc.finalproject.api.service;
 
 import com.jihye.fc.finalproject.api.dto.AuthUser;
+import com.jihye.fc.finalproject.api.dto.EngagementEmailStuff;
 import com.jihye.fc.finalproject.api.dto.EventCreateReq;
+import com.jihye.fc.finalproject.core.domain.Event;
 import com.jihye.fc.finalproject.core.domain.RequestStatus;
 import com.jihye.fc.finalproject.core.domain.entity.Engagement;
 import com.jihye.fc.finalproject.core.domain.entity.Schedule;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,21 +55,27 @@ public class EventService {
 			  eventCreateReq.getEndAt(),
 			  userService.findByUserId(authUser.getId())
 		);
-		
 		scheduleRepository.save(eventSchedule);
-		eventCreateReq.getAttendeeIds()
-			  .forEach(atId -> {
-				  final User attendee = userService.findByUserId(atId);
+		
+		final List<User> attendees =
+		        eventCreateReq.getAttendeeIds().stream()
+					.map(userService::findByUserId)
+				    .collect(Collectors.toList());
+		
+		attendees.forEach(attendee -> {
 				  final Engagement engagement = Engagement.builder()
 					    .schedule(eventSchedule)
 					    .requestStatus(RequestStatus.REQUESTED)
 					    .attendee(attendee)
 					    .build();
 				  engagementRepository.save(engagement);
-				  emailService.sendEngagement(engagement);
-			  });
-		System.out.println("engagement 저장");
-		
-		
+				  emailService.sendEngagement(EngagementEmailStuff.builder()
+					      .engagementId(engagement.getId())
+						  .title(engagement.getEvent().getTitle())
+						  .toEmail(engagement.getAttendee().getEmail())
+						  .attendeeEmails(attendees.stream().map(User::getEmail).collect(Collectors.toList()))
+						  .period(engagement.getEvent().getPeriod())
+					    .build());
+			    });
 	}
 }
