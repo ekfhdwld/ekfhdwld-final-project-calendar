@@ -73,9 +73,7 @@ public class EventService {
 					      .engagementId(engagement.getId())
 						  .title(engagement.getEvent().getTitle())
 						  .toEmail(engagement.getAttendee().getEmail())
-						  .attendeeEmails(attendees.stream()
-							    .map(User::getEmail)
-							    .collect(Collectors.toList()))
+						  .attendeeEmails(attendees.stream().map(User::getEmail).collect(Collectors.toList()))
 						  .period(engagement.getEvent().getPeriod())
 					    .build());
 			    });
