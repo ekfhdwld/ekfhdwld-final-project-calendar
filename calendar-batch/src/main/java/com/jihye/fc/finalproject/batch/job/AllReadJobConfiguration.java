@@ -60,7 +60,6 @@ public class AllReadJobConfiguration {
 	@Bean
 	public JdbcCursorItemReader<Schedule> allReadReader() {
 		return new JdbcCursorItemReaderBuilder<Schedule>()
-       		  .fetchSize(FETCH_SIZE)
 		  .dataSource(dataSource)
 		  .rowMapper(new BeanPropertyRowMapper<>(Schedule.class))
 		  .sql("select * from schedules order by id")
@@ -73,7 +72,6 @@ public class AllReadJobConfiguration {
 	  PagingQueryProvider queryProvider) {
 		return new JdbcPagingItemReaderBuilder<Schedule>()
 		  .pageSize(CHUNK_SIZE)
-		  .fetchSize(FETCH_SIZE)
 		  .dataSource(dataSource)
 		  .rowMapper(new BeanPropertyRowMapper<>(Schedule.class))
 		  .queryProvider(queryProvider)
@@ -96,6 +94,7 @@ public class AllReadJobConfiguration {
 	}
 	
 	@Bean
+	
 	public ItemWriter<Schedule> allReadWriter() {
 		return list -> log.info("write items.\n" +
 		  list.stream()
