@@ -1,5 +1,6 @@
 package com.jihye.fc.finalproject.api.service;
 
+import com.jihye.fc.finalproject.api.controller.BatchController;
 import com.jihye.fc.finalproject.api.dto.EngagementEmailStuff;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -31,5 +32,10 @@ public class RealEmailService implements EmailService{
 			);
 		};
 		emailSender.send(preparator);
+	}
+	
+	@Override
+	public void sendAlarmMail(BatchController.SendMailBatchReq r) {
+		System.out.println(r.toString());
 	}
 }

@@ -15,6 +15,7 @@ import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuild
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 import java.util.stream.Collectors;
@@ -73,7 +74,7 @@ public class SendEmailAlarmJobConfiguration {
 		return new JdbcCursorItemReaderBuilder<SendMailBatchReq>()
 		  .dataSource(dataSource)
 		  .rowMapper(new BeanPropertyRowMapper<>(SendMailBatchReq.class))
-		  .sql("select s.id, s.start_at, s.title, u.email as user_email" +
+		  .sql("select s.id, s.start_at, s.title, u.email as user_mail" +
 			    "from schedules s\n" +
 			    "    inner join user u on s.writer_id = u.id\n" +
 			    "where s.start_at >= now() + interval 10 minute\n" +
@@ -87,7 +88,7 @@ public class SendEmailAlarmJobConfiguration {
 		return new JdbcCursorItemReaderBuilder<SendMailBatchReq>()
 		  .dataSource(dataSource)
 		  .rowMapper(new BeanPropertyRowMapper<>(SendMailBatchReq.class))
-		  .sql("select s.id, s.start_at, s.title, u.email as user_email" +
+		  .sql("select s.id, s.start_at, s.title, u.email as user_mail" +
 			    "from schedules s\n" +
 			    "    inner join user u on s.writer_id = u.id\n" +
 			    "where s.start_at >= now() + interval 10 minute\n" +
@@ -99,9 +100,8 @@ public class SendEmailAlarmJobConfiguration {
 	
 	@Bean
 	public ItemWriter<SendMailBatchReq> sendAlarmWriter() {
-		return list -> log.info("write items.\n" +
-		  list.stream()
-			.map(s -> s.toString())
-			.collect(Collectors.joining("\n")));
+		return list -> new RestTemplate().postForObject(
+		  "http://localhost:8080/api/batch/mail", list, Object.class
+		);
 	}
 }
