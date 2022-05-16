@@ -2,6 +2,7 @@ package com.jihye.fc.finalproject.api.service;
 
 import com.jihye.fc.finalproject.api.controller.BatchController;
 import com.jihye.fc.finalproject.api.dto.EngagementEmailStuff;
+import com.jihye.fc.finalproject.core.domain.entity.Share;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -37,5 +38,10 @@ public class RealEmailService implements EmailService{
 	@Override
 	public void sendAlarmMail(BatchController.SendMailBatchReq r) {
 		System.out.println(r.toString());
+	}
+	
+	@Override
+	public void sendShareRequestMail(String email, String name, Share.Direction direction) {
+		System.out.println("send share request mail. " + email + ", " + name + ", " + direction);
 	}
 }
